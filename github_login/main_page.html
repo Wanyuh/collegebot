@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your GitHub Dashboard!</h1>
+        <p id="user-info"></p>
+        <button id="logout">Logout</button>
+    </div>
+
+    <script>
+        // Extract the token and userInfo from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const userInfo = JSON.parse(decodeURIComponent(urlParams.get('userInfo')));
+
+        if (token) {
+            // Display the user information
+            document.getElementById('user-info').innerHTML = `
+                <h2>Your GitHub Profile:</h2>
+                <p><strong>Username:</strong> ${userInfo.login}</p>
+                <p><strong>ID:</strong> ${userInfo.id}</p>
+                <p><strong>Avatar URL:</strong> <img src="${userInfo.avatar_url}" alt="${userInfo.login}'s Avatar" width="100"></p>
+                <p><strong>HTML URL:</strong> <a href="${userInfo.html_url}" target="_blank">${userInfo.html_url}</a></p>
+                <p><strong>Followers:</strong> ${userInfo.followers}</p>
+                <p><strong>Following:</strong> ${userInfo.following}</p>
+            `;
+        } else {
+            document.getElementById('user-info').innerText = 'No token found.';
+        }
+
+        document.getElementById('logout').addEventListener('click', () => {
+            // Implement logout functionality (clear token, redirect to login, etc.)
+            window.location.href = '/'; // Redirect to login page
+        });
+    </script>
+</body>
+</html>

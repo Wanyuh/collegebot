@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Login with GitHub</h1>
+        <p>
+            To log in, please click the button below. You will be redirected to GitHub to enter your credentials securely.
+        </p>
+        <form id="login-form">
+            <input type="text" id="client_id" placeholder="Enter your GitHub Client ID" required>
+            <button type="submit">Login with GitHub</button>
+        </form>
+        <p id="login-message"></p>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const client_id = document.getElementById('client_id').value;
+
+            // Start the login process by sending the client ID to the server
+            const response = await fetch('/start-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ client_id })  // Send the client ID to the server
+            });
+
+            const data = await response.json();
+            if (data.auth_url) {
+                // Redirect to GitHub's login page
+                window.location.href = data.auth_url;
+            } else {
+                document.getElementById('login-message').innerText = 'Failed to initiate login. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
