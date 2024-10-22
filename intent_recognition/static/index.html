@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 20px;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            border-radius: 10px;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+        }
+        .user-message, .bot-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 75%;
+            clear: both;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: right;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #e2e3e5;
+            color: #333333;
+            text-align: left;
+            margin-right: auto;
+        }
+        input[type="text"], button {
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            width: calc(100% - 28px); /* Full width minus padding */
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Campus Chatbot</h1>
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user_input" placeholder="Type your message here" />
+        <button id="submit">Send</button>
+    </div>
+
+    <script>
+        document.getElementById('submit').addEventListener('click', async () => {
+            const userInput = document.getElementById('user_input').value;
+            if (userInput.trim() === '') return;
+
+            // Display user message
+            appendMessage('user', userInput);
+            document.getElementById('user_input').value = '';
+
+            const response = await fetch('/detect-intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_input: userInput }),
+            });
+
+            const data = await response.json();
+            const botMessage = data.response;
+            appendMessage('bot', botMessage);
+        });
+
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+        }
+    </script>
+</body>
+</html>
