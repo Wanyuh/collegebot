@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Similarity Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 50px;
+        }
+
+        form {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: block;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #results {
+            margin-top: 30px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .result-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .result-item strong {
+            color: #333;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ask Your Question</h1>
+    <form id="qa-form" action="/handle_user_question" method="POST">
+        <label for="question">Your Question:</label>
+        <input type="text" id="question" name="question" placeholder="Type your question here..." required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('qa-form').onsubmit = async function (event) {
+            event.preventDefault();
+            const question = document.getElementById('question').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';  // Clear previous results
+
+            try {
+                const response = await fetch('/handle_user_question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const results = await response.json();
+
+                // Display the results
+                resultsDiv.innerHTML = '<h2>Results:</h2>';
+                results.results.forEach(item => {
+                    const resultItem = document.createElement('div');
+                    resultItem.classList.add('result-item');
+                    resultItem.innerHTML = `
+                        <p><strong>ID Paragraph:</strong> ${item.id_paragraph}</p>
+                        <p><strong>Similarity Score:</strong> ${item.similarity}</p>
+                        <p><strong>Content:</strong> ${item.content}</p>
+                    `;
+                    resultsDiv.appendChild(resultItem);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>
