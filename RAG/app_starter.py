@@ -358,7 +358,7 @@ def calculate_similarity(vec1, vec2):
     if vec1.ndim != 1 or vec2.ndim != 1:
         raise ValueError("Input vectors must be 1D arrays")
 
-    # Example: Cosine similarity
+    # Use Cosine similarity
     cosine_similarity =  np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
 
     return cosine_similarity
