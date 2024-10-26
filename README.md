@@ -7,6 +7,7 @@ This repository contains three projects showcasing various functionalities: **Al
 - [GitHub Login](#github-login)
 - [Intent Recognition](#intent-recognition)
 - [Screenshots](#screenshots)
+- [Video Record for RAG](#video)
 
 ---
 
@@ -107,6 +108,14 @@ The **Intent Recognition** project utilizes machine learning to classify user in
 Screenshots of the projects can be found in the following Google Document:
 
 [Project Results Screenshot](https://docs.google.com/document/d/1vX7baKwOci54Pby0-9qYzgieeREkjS_ToYtactBtjR0/edit?usp=sharing)
+
+## RAG
+
+### Key Points:
+- The Google Drive link to the video is now included in the **Video Record for RAG** section as a clickable link.
+- You can fill in the `Overview`, `Installation`, and `Usage` sections with details specific to your project.
+
+[Video Record for RAG Project](https://drive.google.com/drive/folders/17TQBY1HphgQVuHY_935J609SmNfkxnyH?usp=share_link)
 
 
 Let me know if you need any further adjustments!
