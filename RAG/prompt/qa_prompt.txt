@@ -1,0 +1,15 @@
+[Task]
+You will be given the following:
+Background Information: {background}
+
+Your task is to provide a detailed answer to the question defined in the #Question# section based on the #Background Information# provided. Feel free to add your knowledge.
+
+[Additional Guidelines]
+- Make sure your answer is comprehensive and directly addresses the question.
+- If the information required to answer the question is not available in the background information, output an empty response.
+
+[Question]
+{question}
+
+[Output Format]
+STRICTLY provide your answer in plain text. Do not include any additional explanations or formatting.

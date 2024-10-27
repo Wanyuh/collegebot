@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload a File</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        // Request permission for notifications
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
+        document.getElementById('uploadForm').onsubmit = async (event) => {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+            const formData = new FormData(event.target);
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/uploadfile/', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.status === 303 || response.redirected) {
+                // Redirect manually since the fetch API does not handle redirects automatically
+                window.location.href = response.url;
+                return; // Stop further execution
+            }
+
+                const data = await response.json();
+
+                // Clear previous messages
+                messageDiv.innerText = '';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Show success message
+                    messageDiv.innerText = data.message;
+                    messageDiv.className = 'success'; // Add success class for styling
+
+                    // Send a notification for successful upload
+                    if (Notification.permission === "granted") {
+                        new Notification("Upload Successful", {
+                            body: data.message,
+                        });
+                    }
+
+                    // Redirect after a short delay
+                    console.log("Setting up redirection...");
+                    setTimeout(() => {
+                        window.location.href = "/static/qa_index.html";
+                    }, 2000); // Redirect after 2 seconds
+                } else {
+                    // Show error message
+                    messageDiv.innerText = data.detail || 'An unknown error occurred.';
+                    messageDiv.className = 'error'; // Add error class for styling
+                }
+            } catch (error) {
+                messageDiv.innerText = 'Upload failed: ' + error.message;
+                messageDiv.className = 'error'; // Add error class for styling
+            }
+        };
+    </script>
+</body>
+</html>
